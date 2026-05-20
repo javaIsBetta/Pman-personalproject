@@ -98,6 +98,10 @@ class ArenaBuilder {
 	public static void main(String [] args) {
 		ArenaBuilder ab = new ArenaBuilder(500,500,8);
 		ArenaVisualiser.saveAsPNG(grid, "/Users/konkevezi/Desktop/arena.png", 5);
+		
+		for (int i =0; i< 50; i++) {
+			System.out.println("HELLO");
+		}
 	}
 	
 	
