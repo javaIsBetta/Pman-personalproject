@@ -7,7 +7,7 @@ class ArenaBuilder {
 	int ylength;
 	 private static Random rnd;
 	 private int [] values = {0, 1}; //0 for open space, 1 for wall
-	private  double [] weights = {0.70, 0.30}; //chance of the coordinate at the grid being either open
+	private  double [] weights = {0.55, 0.45}; //chance of the coordinate at the grid being either open
 	private double[] cumulativeWeights;
 	 //space or a wall that you cannot go through
 	 //currently with this implementation there is a chance the user may spawn in an open space and all
@@ -59,7 +59,13 @@ class ArenaBuilder {
 	
 	
 	private void cellularAutomata (int iterations){
-		
+		/*New rule for a more structured arena: birth/survival rule:
+		A tile becomes a wall if it was a wall and 4 or more of the 8 adjacent elements were
+		walls, or if it was not a wall and 5 or moe neighbors were-- so simply --
+		Let x be the current position we are on.
+		if (x == 1 && countOfWalls>=4) || (x!=1 && countOfWalls>=5) { x =1;
+		in any other case it is an open tile (0)
+		*/
 		int newValue;
 		for (int k =0; k<iterations; k++) {
 			//int newGrid [][] = new int [xlength][ylength];
@@ -69,7 +75,8 @@ class ArenaBuilder {
 						grid[i-1][j-1] +grid[i+1][j+1] + 
 						grid[i-1][j+1] +grid[i+1][j-1] + 
 						grid[i][j-1] +grid[i][j+1] ;
-				if (newValue>3) {		
+				//newValue still works as the count of surrounding walls
+				if ((grid[i][j] == 1 && newValue>=4) || (grid[i][j] == 0 && newValue >= 5)) {		
 				gridBuffer[i][j] = 1;
 			}
 				else {
@@ -96,12 +103,9 @@ class ArenaBuilder {
 	}
 	
 	public static void main(String [] args) {
-		ArenaBuilder ab = new ArenaBuilder(500,500,8);
+		ArenaBuilder ab = new ArenaBuilder(500,500,4);
 		ArenaVisualiser.saveAsPNG(grid, "/Users/konkevezi/Desktop/arena.png", 5);
-		
-		for (int i =0; i< 50; i++) {
-			System.out.println("HELLO");
-		}
+
 	}
 	
 	
