@@ -1,4 +1,5 @@
 import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.Arrays;
 class ArenaBuilder {
 	static int[][] grid;
@@ -84,7 +85,7 @@ class ArenaBuilder {
 				}
 		}
 	}
-		int[][] temp = this.grid;
+		int[][] temp = grid;
 		grid = gridBuffer;
 		gridBuffer = temp;
 		//printGrid();
@@ -102,9 +103,28 @@ class ArenaBuilder {
 	        }
 	}
 	
+	public void genSpawnPoint () {
+		int x;
+		int y;
+		while (true) {
+			 x = ThreadLocalRandom.current().nextInt(2, xlength-2);
+			 y = ThreadLocalRandom.current().nextInt(2, ylength-2);
+			 if (grid[x][y] == 1) {
+				 //go again
+				 //this is probably not optimal, just trying somethin
+			 }
+			 else {
+				 grid[x][y] = 2;
+				 break;
+			 }
+		}
+		
+	}
+	
 	public static void main(String [] args) {
-		ArenaBuilder ab = new ArenaBuilder(500,500,4);
-		ArenaVisualiser.saveAsPNG(grid, "/Users/konkevezi/Desktop/arena.png", 5);
+		ArenaBuilder ab = new ArenaBuilder(25,25,4);
+		ab.genSpawnPoint();
+		ArenaVisualiser.saveAsPNG(grid, "/Users/konkevezi/Desktop/arena.png", 7);
 
 	}
 	

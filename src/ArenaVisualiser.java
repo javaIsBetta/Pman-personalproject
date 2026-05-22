@@ -11,7 +11,7 @@ public class ArenaVisualiser {
     /**
      * Saves the arena grid as a PNG file
      * @param grid The arena grid (0 = floor, 1 = wall)
-     * @param outputPath Where to save the PNG (e.g., "arena.png")
+     * @param outputPath Where to save the PNG ("arena.png")
      * @param cellSize Size of each cell in pixels (5-10 is good)
      */
     public static void saveAsPNG(int[][] grid, String outputPath, int cellSize) {
@@ -35,8 +35,11 @@ public class ArenaVisualiser {
                 Color cellColor;
                 if (grid[row][col] == 1) {
                     cellColor = Color.BLACK;  // Walls
-                } else {
-                    cellColor = Color.PINK;  // Floors
+                } else if (grid[row][col] == 0){
+                    cellColor = Color.WHITE;  // Floors
+                }
+                else { //user spawn point
+                	cellColor = Color.GREEN;
                 }
                 
                 // Draw the cell as a filled rectangle
