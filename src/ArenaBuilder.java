@@ -34,9 +34,10 @@ class ArenaBuilder {
 		//populate within the borders
 		populateGrid();
 		cellularAutomata(iter);
+		genSpawnPoint();
 		}
 	
-    public int getRandomValue() {
+    private int getRandomValue() {
         double rand = rnd.nextDouble() * cumulativeWeights[cumulativeWeights.length - 1]; //random number will be in between 0 to 100
         
         // Binary search for O(log n) performance
@@ -103,13 +104,20 @@ class ArenaBuilder {
 	        }
 	}
 	
-	public void genSpawnPoint () {
+	private void genSpawnPoint () {
 		int x;
 		int y;
+		int count = 10;
 		while (true) {
 			 x = ThreadLocalRandom.current().nextInt(2, xlength-2);
 			 y = ThreadLocalRandom.current().nextInt(2, ylength-2);
 			 if (grid[x][y] == 1) {
+				 count--;
+				 if (count ==0) {
+					 System.exit(1);
+				 }
+				 //only repeat this for count tries, if spawn point not found in ten attempts, grid surely must not have a lot of space for user
+				 //or we jut got unlucky and only got walls.
 				 //go again
 				 //this is probably not optimal, just trying somethin
 			 }
@@ -121,9 +129,18 @@ class ArenaBuilder {
 		
 	}
 	
+	
+	private void closeOffPockets() {
+		boolean [][] flood = new boolean [xlength][ylength];
+		for (int k = 0; k<xlength; k++) {
+			for (int j =0; j<ylength; j++) {
+				flood[k][j] = false;
+			}
+		}
+	}
+	
 	public static void main(String [] args) {
 		ArenaBuilder ab = new ArenaBuilder(25,25,4);
-		ab.genSpawnPoint();
 		ArenaVisualiser.saveAsPNG(grid, "/Users/konkevezi/Desktop/arena.png", 7);
 
 	}
