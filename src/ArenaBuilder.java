@@ -1,11 +1,17 @@
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Queue;
 class ArenaBuilder {
 	static int[][] grid;
 	static int [][] gridBuffer; //for cellular automation processing
 	int xlength;
 	int ylength;
+	int spawnX;
+	int spawnY;
 	 private static Random rnd;
 	 private int [] values = {0, 1}; //0 for open space, 1 for wall
 	private  double [] weights = {0.55, 0.45}; //chance of the coordinate at the grid being either open
@@ -34,6 +40,7 @@ class ArenaBuilder {
 		//populate within the borders
 		populateGrid();
 		cellularAutomata(iter);
+		closeOffPockets();
 		genSpawnPoint();
 		}
 	
@@ -114,6 +121,7 @@ class ArenaBuilder {
 			 if (grid[x][y] == 1) {
 				 count--;
 				 if (count ==0) {
+					 System.out.println("Could not find a spawn point");
 					 System.exit(1);
 				 }
 				 //only repeat this for count tries, if spawn point not found in ten attempts, grid surely must not have a lot of space for user
@@ -123,6 +131,8 @@ class ArenaBuilder {
 			 }
 			 else {
 				 grid[x][y] = 2;
+				 spawnX =x;
+				 spawnY = y;
 				 break;
 			 }
 		}
@@ -130,17 +140,28 @@ class ArenaBuilder {
 	}
 	
 	
-	private void closeOffPockets() {
+	private void closeOffPockets() { //flood fill
 		boolean [][] flood = new boolean [xlength][ylength];
-		for (int k = 0; k<xlength; k++) {
-			for (int j =0; j<ylength; j++) {
-				flood[k][j] = false;
-			}
+		Queue<int[]> BFS = new LinkedList<>();
+		//start from the spawn point
+		//apply bfs from there on marking cells visitied in the boolean grid, so we dont visit them again
+		//methodology: add spwan point to the queue, mark visited, add the adjacent elements (theyre still marked unvisited)
+		//
+		BFS.add(new int[] {spawnX, spawnY});
+		flood[spawnX][spawnY] = true;
+		int tempX;
+		int tempY;
+		while (!BFS.isEmpty()) {
+			//add adjacent elements to the queue, move onto next one and check adjacent elements, repeat pattern until queue is empty
+			//only directions: up, down, left, right
+			//(x,y), (x-1,y)= left, (x+1,y) = right, (x, y-1) = down, (x,y+1) = up
+			
 		}
 	}
 	
+	
 	public static void main(String [] args) {
-		ArenaBuilder ab = new ArenaBuilder(25,25,4);
+		ArenaBuilder ab = new ArenaBuilder(25,25,5);
 		ArenaVisualiser.saveAsPNG(grid, "/Users/konkevezi/Desktop/arena.png", 7);
 
 	}
