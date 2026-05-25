@@ -41,8 +41,9 @@ class ArenaBuilder {
 		//populate within the borders
 		populateGrid();
 		cellularAutomata(iter);
-		closeOffPockets();
 		genSpawnPoint();
+		closeOffPockets();
+		
 		}
 	
 	public ArenaBuilder(int x, int y, int s, int iter) { // has a seed parameter that allows deterministic generation
@@ -208,11 +209,19 @@ class ArenaBuilder {
 			}
 			//
 		}
+		//We've identified the reachable pocket, close off the unreachable one.
+		for (int i =1; i<xlength-1; i++) {
+			for (int j = 1; j<ylength-1; j++) {
+				if (grid[i][j] ==0 && flood[i][j] == false) {
+					grid[i][j] = 1; //not reached, so turn it into a wall.
+				}
+			}
+		}
 	}
 	
 	
 	public static void main(String [] args) {
-		ArenaBuilder ab = new ArenaBuilder(25,25,5);
+		ArenaBuilder ab = new ArenaBuilder(50,50,5);
 		ArenaVisualiser.saveAsPNG(grid, "/Users/konkevezi/Desktop/arena.png", 7);
 
 	}
