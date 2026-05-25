@@ -12,6 +12,7 @@ class ArenaBuilder {
 	int ylength;
 	int spawnX;
 	int spawnY;
+	int seed;
 	 private static Random rnd;
 	 private int [] values = {0, 1}; //0 for open space, 1 for wall
 	private  double [] weights = {0.55, 0.45}; //chance of the coordinate at the grid being either open
@@ -19,7 +20,32 @@ class ArenaBuilder {
 	 //space or a wall that you cannot go through
 	 //currently with this implementation there is a chance the user may spawn in an open space and all
 	 //surrounding directions be walls (odds are low but it is possible), essentially trapping them, this will be resolved later on
-	public ArenaBuilder(int x, int y, int iter) {
+	public ArenaBuilder(int x, int y, int iter) { // completely random implementation.
+		this.xlength = x+2;//2 rows added for borders
+		this.ylength = y+2;//2 columns added for borders
+		grid = new int[xlength][ylength];
+		gridBuffer = new int [xlength][ylength];
+		//set every element to 1 in the grid;
+		for (int i = 0; i<xlength; i++) {
+			for (int j =0; j<ylength; j++) {
+				grid[i][j] = 1;
+				gridBuffer[i][j] = 1;
+			}
+		}
+		rnd = new Random();
+		this.cumulativeWeights = new double [weights.length];
+		this.cumulativeWeights[0] = weights[0];
+		for (int i = 1; i<weights.length; i++) {
+			this.cumulativeWeights[i] = this.cumulativeWeights[i-1] + weights[i];
+		}
+		//populate within the borders
+		populateGrid();
+		cellularAutomata(iter);
+		closeOffPockets();
+		genSpawnPoint();
+		}
+	
+	public ArenaBuilder(int x, int y, int s, int iter) { // has a seed parameter that allows deterministic generation
 		this.xlength = x+2;//2 rows added for borders
 		this.ylength = y+2;//2 columns added for borders
 		grid = new int[xlength][ylength];
@@ -116,8 +142,8 @@ class ArenaBuilder {
 		int y;
 		int count = 10;
 		while (true) {
-			 x = ThreadLocalRandom.current().nextInt(2, xlength-2);
-			 y = ThreadLocalRandom.current().nextInt(2, ylength-2);
+			 x = ThreadLocalRandom.current().nextInt(1, xlength-1);
+			 y = ThreadLocalRandom.current().nextInt(1, ylength-1);
 			 if (grid[x][y] == 1) {
 				 count--;
 				 if (count ==0) {
@@ -149,13 +175,38 @@ class ArenaBuilder {
 		//
 		BFS.add(new int[] {spawnX, spawnY});
 		flood[spawnX][spawnY] = true;
-		int tempX;
-		int tempY;
+		int tempX ;
+		int tempY ;
 		while (!BFS.isEmpty()) {
 			//add adjacent elements to the queue, move onto next one and check adjacent elements, repeat pattern until queue is empty
 			//only directions: up, down, left, right
 			//(x,y), (x-1,y)= left, (x+1,y) = right, (x, y-1) = down, (x,y+1) = up
-			
+			//do for each cardinal direction
+			int[] current = BFS.poll(); // x and y values in the returned array
+			tempX = current[0];
+			tempY = current[1];
+			//four if statements for each cardinal neighbor
+			if (grid[tempX-1][tempY] == 0 && flood[tempX-1][tempY] == false) {
+				BFS.add(new int[] {tempX-1, tempY});
+				flood[tempX-1][tempY] = true; // set visited to true
+				//BFS.poll(); //rempve from the queue
+			}
+			if (grid[tempX+1][tempY] == 0 && flood[tempX+1][tempY] == false) {
+				BFS.add(new int[] {tempX+1, tempY});
+				flood[tempX+1][tempY] = true;
+				//BFS.poll();
+			}
+			if (grid[tempX][tempY-1] == 0 && flood[tempX][tempY-1] == false) {
+				BFS.add(new int[] {tempX, tempY-1});
+				flood[tempX][tempY-1] = true;
+				//BFS.poll();
+			}
+			if (grid[tempX][tempY+1] == 0 && flood[tempX][tempY+1] == false) {
+				BFS.add(new int[] {tempX, tempY+1});
+				flood[tempX][tempY+1] = true;
+				//BFS.poll();
+			}
+			//
 		}
 	}
 	
