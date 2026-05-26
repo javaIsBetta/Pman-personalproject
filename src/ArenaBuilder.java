@@ -58,7 +58,7 @@ class ArenaBuilder {
 				gridBuffer[i][j] = 1;
 			}
 		}
-		rnd = new Random();
+		rnd = new Random(s);
 		this.cumulativeWeights = new double [weights.length];
 		this.cumulativeWeights[0] = weights[0];
 		for (int i = 1; i<weights.length; i++) {
@@ -67,9 +67,16 @@ class ArenaBuilder {
 		//populate within the borders
 		populateGrid();
 		cellularAutomata(iter);
-		closeOffPockets();
 		genSpawnPoint();
+		closeOffPockets();
 		}
+	public int[][] getGrid (){
+		return grid;
+	}
+	public int[] getSpawnPoint () {
+		int [] SP= {spawnX, spawnY};
+		return SP;
+	}
 	
     private int getRandomValue() {
         double rand = rnd.nextDouble() * cumulativeWeights[cumulativeWeights.length - 1]; //random number will be in between 0 to 100
@@ -221,8 +228,9 @@ class ArenaBuilder {
 	
 	
 	public static void main(String [] args) {
-		ArenaBuilder ab = new ArenaBuilder(50,50,5);
-		ArenaVisualiser.saveAsPNG(grid, "/Users/konkevezi/Desktop/arena.png", 7);
+		//ArenaBuilder ab = new ArenaBuilder(25,25,5);
+		ArenaBuilder ab = new ArenaBuilder(25, 25, 17, 5);// for reproducable arena -- note spawn point will most likely be different
+		ArenaVisualiser.saveAsPNG(grid, "/Users/konkevezi/Desktop/arena.png", 30);
 
 	}
 	
