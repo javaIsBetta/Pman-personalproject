@@ -48,7 +48,8 @@ public class GamePanel extends JPanel implements KeyListener{
 	@Override 
 	protected void paintComponent(Graphics g){
 		super.paintComponent(g);
-		cellSize = this.getWidth()/gridWidth;
+		//cellSize = this.getWidth()/gridWidth;
+		cellSize =25;
 		Color c = null;
 		for (int row =0; row< gridHeight; row++) {
 			for (int col =0; col<gridWidth; col++) {
@@ -62,7 +63,15 @@ public class GamePanel extends JPanel implements KeyListener{
 				g.fillRect(row*cellSize, col*cellSize, cellSize, cellSize);
 			}
 			
+			
 		}
+		for (int row =0; row< gridHeight; row++) {
+			for (int col =0; col<gridWidth; col++) {
+				g.setColor(Color.GRAY);
+				g.drawRect(row*cellSize, col*cellSize, cellSize, cellSize);
+			}
+		}
+        
 		c= Color.green;
 		g.setColor(c);
 		g.fillRect(plyrX*cellSize, plyrY*cellSize, cellSize, cellSize);
@@ -111,6 +120,7 @@ public class GamePanel extends JPanel implements KeyListener{
 	
 	private void tryMove(int x, int y) {
 		if (grid[x][y] == 1) {
+			System.out.println("Player hit a wall!");
 			//cannot move there //nothing happens maybe bounce back animation? //error sound?
 		}
 		else { // 0 or or 2
@@ -118,13 +128,6 @@ public class GamePanel extends JPanel implements KeyListener{
 			plyrY =y;
 			repaint();
 		}
-	}
-	
-	public static void main(String [] args) {
-		ArenaBuilder a = new ArenaBuilder (25, 25, 17, 5);
-		GameWindow k = new GameWindow();
-		GamePanel g = new GamePanel(a);
-		k.add(g);
 	}
 	
 	
