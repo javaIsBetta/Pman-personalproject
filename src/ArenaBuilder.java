@@ -6,13 +6,13 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 class ArenaBuilder {
-	static int[][] grid;
-	static int [][] gridBuffer; //for cellular automation processing
+	private static int[][] grid;
+	private static int [][] gridBuffer; //for cellular automation processing
 	int xlength;
 	int ylength;
-	int spawnX;
-	int spawnY;
-	int seed;
+	private int spawnX;
+	private int spawnY;
+	private int seed;
 	 private static Random rnd;
 	 private int [] values = {0, 1}; //0 for open space, 1 for wall
 	private  double [] weights = {0.55, 0.45}; //chance of the coordinate at the grid being either open
@@ -227,12 +227,12 @@ class ArenaBuilder {
 	}
 	
 	
-	public static void main(String [] args) {
+	/*public static void main(String [] args) {
 		//ArenaBuilder ab = new ArenaBuilder(25,25,5);
 		ArenaBuilder ab = new ArenaBuilder(25, 25, 17, 5);// for reproducable arena -- note spawn point will most likely be different
 		ArenaVisualiser.saveAsPNG(grid, "/Users/konkevezi/Desktop/arena.png", 30);
 
-	}
+	}*/
 	
 	
 }
